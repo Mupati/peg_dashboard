@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 .vscode/
 __pycache__/
 todo.txt
 instance/
-=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -108,4 +106,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
->>>>>>> a87598380d5f790333c83decf5e8f7fc3caea4c9
