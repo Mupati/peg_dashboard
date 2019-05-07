@@ -37,7 +37,7 @@ class Contract(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False, index=True,
-                           default=datetime.utcnow)
+                           default=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
     # transaction = db.relationship(
@@ -54,7 +54,8 @@ class Transaction(db.Model):
     status = db.Column(db.String(60), index=True, nullable=False)
     type = db.Column(db.String(60), nullable=False)
     amount = db.Column(db.Float)
-    date = db.Column(db.DateTime)
+    date = db.Column(
+        db.DateTime, default=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
     contract_id = db.Column(db.Integer, db.ForeignKey('contracts.id'))
 
     def __repr__(self):
