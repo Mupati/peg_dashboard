@@ -145,34 +145,24 @@
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                   <tr>
+                    <th>Product ID</th>
                     <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Extn.</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
+                    <th>Deposit</th>
+                    <th>Total Price</th>
+                    <th>Payment Frequency</th>
+                    <th>Payment Amount</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
+                    <th>Product ID</th>
                     <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Extn.</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
+                    <th>Deposit</th>
+                    <th>Total Price</th>
+                    <th>Payment Frequency</th>
+                    <th>Payment Amount</th>
                   </tr>
                 </tfoot>
-                <!-- <tbody>
-                    <tr>
-                      <td>Donna Snider</td>
-                      <td>Customer Support</td>
-                      <td>New York</td>
-                      <td>27</td>
-                      <td>2011/01/25</td>
-                      <td>$112,000</td>
-                    </tr>
-                  </tbody> -->
               </table>
             </div>
           </div>
@@ -218,12 +208,17 @@
         </div>
         <div class="modal-body">
           <form action="/products" method="POST">
-            {% for field in form %}
-            {{ field.label() }}
-            {{ field() }}<br>
-            {% endfor %}
-
-            <button type="submit" />
+            {{ form.name.label }}
+            {{ form.name }}<br>
+            {{ form.deposit.label }}
+            {{ form.deposit }}<br>
+            {{ form.total_price.label }}
+            {{ form.total_price }}<br>
+            {{ form.payment_frequency.label }}
+            {{ form.payment_frequency }}<br>
+            {{ form.payment_amount.label }}
+            {{ form.payment_amount }}<br>
+            {{ form.submit }}
           </form>
         </div>
         <div class="modal-footer">
@@ -288,12 +283,12 @@
             contentType: "application/json"
           },
           columns: [
+            { data: "id" },
             { data: "name" },
-            { data: "position" },
-            { data: "office" },
-            { data: "extn" },
-            { data: "start_date" },
-            { data: "salary" }
+            { data: "deposit" },
+            { data: "total_price" },
+            { data: "payment_frequency" },
+            { data: "payment_amount" }
           ]
         });
       });

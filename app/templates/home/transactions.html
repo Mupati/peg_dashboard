@@ -145,34 +145,24 @@
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Extn.</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
+                    <th>Transaction ID</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Contract ID</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Extn.</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
+                    <th>Transaction ID</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Contract ID</th>
                   </tr>
                 </tfoot>
-                <!-- <tbody>
-                    <tr>
-                      <td>Donna Snider</td>
-                      <td>Customer Support</td>
-                      <td>New York</td>
-                      <td>27</td>
-                      <td>2011/01/25</td>
-                      <td>$112,000</td>
-                    </tr>
-                  </tbody> -->
               </table>
             </div>
           </div>
@@ -218,17 +208,18 @@
         </div>
         <div class="modal-body">
           <form action="/transactions" method="POST">
-            {% for field in form %}
-            {{ field.label() }}
-            {{ field() }}<br>
-            {% endfor %}
-
-            <button type="submit" />
+            {{ form.status.label}}
+            {{ form.status }} <br>
+            {{ form.type.label}}
+            {{ form.type }} <br>
+            {{ form.amount.label }}
+            {{ form.amount }} <br>
+            {{ form.try_contract.customer_id.label }}
+            {{ form.try_contract.customer_id }} <br>
+            {{ form.try_contract.product_id.label }}
+            {{ form.try_contract.product_id }} <br>
+            {{ form.submit }}
           </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Save changes</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -282,18 +273,18 @@
         $("#dataTable").DataTable({
           ajax: {
             // "url": "static/objects2.txt", // This works for the static file
-            url: "/product_data", // This now works too thanks to @kthorngren
+            url: "/transaction_data", // This now works too thanks to @kthorngren
             dataType: "json",
             dataSrc: "data",
             contentType: "application/json"
           },
           columns: [
-            { data: "name" },
-            { data: "position" },
-            { data: "office" },
-            { data: "extn" },
-            { data: "start_date" },
-            { data: "salary" }
+            { data: "id" },
+            { data: "status" },
+            { data: "type" },
+            { data: "amount" },
+            { data: "date" },
+            { data: "contract_id" }
           ]
         });
       });

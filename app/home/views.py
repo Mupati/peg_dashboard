@@ -3,6 +3,7 @@ from . import home
 from .forms import ProductForm, CustomerForm, ContractForm, TransactionForm
 from .. import db
 from ..models import Product, Customer, Contract, Transaction
+import json
 
 
 @home.route('/index')
@@ -27,6 +28,14 @@ def customers():
         return redirect(url_for('home.index'))
     return render_template('home/customers.html', form=form, title='Customer')
 
+@home.route('/customer_data')
+def get_customer_data():
+    customers = Customer.query.all()
+    customer_data = [customer.to_json() for customer in customers]
+    data = {
+        "data": customer_data
+    }
+    return jsonify(data)
 
 @home.route('/products', methods=['GET', 'POST'])
 def products():
@@ -52,27 +61,10 @@ def products():
 
 @home.route('/product_data')
 def get_product_data():
-    # Assume data comes from somewhere else
+    products = Product.query.all()
+    product_data = [product.to_json() for product in products]
     data = {
-        "data": [
-            {
-                "id": "1",
-                "name": "John Q Public",
-                "position": "System Architect",
-                "salary": "$320,800",
-                "start_date": "2011/04/25",
-                "office": "Edinburgh",
-                "extn": "5421"
-            },
-            {
-                "id": "2",
-                "name": "Larry Bird",
-                "position": "Accountant",
-                "salary": "$170,750",
-                "start_date": "2011/07/25",
-                "office": "Tokyo",
-                "extn": "8422"
-            }]
+        "data": product_data
     }
     return jsonify(data)
 
@@ -93,6 +85,14 @@ def contracts():
         return redirect(url_for('home.index'))
     return render_template('home/contracts.html', title='Contracts', form=form)
 
+@home.route('/contract_data')
+def get_contract_data():
+    contracts = Contract.query.all()
+    contract_data = [contract.to_json() for contract in contracts]
+    data = {
+        "data": contract_data
+    }
+    return jsonify(data)
 
 @home.route('/transactions', methods=['GET', 'POST'])
 def transactions():
@@ -104,7 +104,6 @@ def transactions():
     if form.validate_on_submit():
         contract = Contract.query.filter_by(customer_id=form.try_contract.customer_id.data).filter_by(
             product_id=form.try_contract.product_id.data).first_or_404()
-        print(contract)
         transaction = Transaction(
             status=form.status.data, type=form.type.data, amount=form.amount.data, contract_id=contract.id)
         db.session.add(transaction)
@@ -112,3 +111,12 @@ def transactions():
         flash('transaction successfully created')
         return redirect(url_for('home.index'))
     return render_template('home/transactions.html', title='Transactions', form=form)
+
+@home.route('/transaction_data')
+def get_transaction_data():
+    transactions = Transaction.query.all()
+    transaction_data = [transaction.to_json() for transaction in transactions]
+    data = {
+        "data": transaction_data
+    }
+    return jsonify(data)
