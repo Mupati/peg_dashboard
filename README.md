@@ -6,9 +6,9 @@ View Demo: [https://www.mupati.devcodes.co](https://www.mupati.devcodes.co)
 
 <hr>
 A system for managing a company staff and customer interactions or transactions
-- Backend : *Flask*
-- Database: *MySQl*
-- Frontend: *Bootstrap*, *JQuery*
+- Backend : **Flask**
+- Database: **MySQl**
+- Frontend: **Bootstrap**, **JQuery**
 
 ## Motivation
 
@@ -67,3 +67,8 @@ $ flask run
 - Dashboard for Customers
 - Analytics with Graphs
 - Background Jobs
+
+## Preview
+Dashboard Home ![alt text](https://res.cloudinary.com/mupati/image/upload/v1557492540/peg/home.png "home")
+Customer Information ![alt text](https://res.cloudinary.com/mupati/image/upload/v1557492540/peg/table.png "display info")
+Add New ![alt text](https://res.cloudinary.com/mupati/image/upload/v1557492540/peg/add.png "add new")
