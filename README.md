@@ -1,6 +1,6 @@
 # PEG Dashboard
 
-View Demo: [https://www.mupati.devcodes.co](https://www.mupati.devcodes.co)
+View Demo: [http://mupati.pythonanywhere.com](http://mupati.pythonanywhere.com)
 
 ## Introduction
 
