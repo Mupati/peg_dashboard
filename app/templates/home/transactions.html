@@ -58,7 +58,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add New Product</h5>
+        <h5 class="modal-title">Create New Transaction</h5>
         <button
           type="button"
           class="close"
@@ -70,6 +70,7 @@
       </div>
       <div class="modal-body">
         <form action="/transactions" method="POST">
+          {{ form.csrf_token }}
           <div class="form-group">
             <label for="name">{{ form.status.label }}</label>
             {{form.status(class_="form-control")}}
@@ -98,45 +99,71 @@
 </div>
 
 <!-- Transaction update or delete modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="transactionEditingModal">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Update or Delete Transaction</h5>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group">
-                {{ form.status.label }}
-                <input type="text" class="form-control" id="txStatus" name="tx_status"/>
-              </div>
-              <div class="form-group">
-                {{ form.type.label }}
-                <input type="text" class="form-control" id="txType" name="tx_type"/>
-              </div>
-              <div class="form-group">
-                {{ form.amount.label }}
-                <input type="text" class="form-control" id="txAmount" name="tx_amount" />
-              </div>
-              <input type="hidden" id="txContractId" name="tx_contract_id" />
-              <input type="hidden" id="txId" name="tx_id" />
-            <div class="text-right">
-              <button id="updateTransaction" class="btn btn-success">Update</button>
-              <button id="deleteTransaction" class="btn btn-danger">Delete</button>
-            </div>
-          </form>
-        </div>
+<div
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  id="transactionEditingModal"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update or Delete Transaction</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST">
+          {{ form.csrf_token }}
+          <div class="form-group">
+            {{ form.status.label }}
+            <input
+              type="text"
+              class="form-control"
+              id="txStatus"
+              name="tx_status"
+            />
+          </div>
+          <div class="form-group">
+            {{ form.type.label }}
+            <input
+              type="text"
+              class="form-control"
+              id="txType"
+              name="tx_type"
+            />
+          </div>
+          <div class="form-group">
+            {{ form.amount.label }}
+            <input
+              type="text"
+              class="form-control"
+              id="txAmount"
+              name="tx_amount"
+            />
+          </div>
+          <input type="hidden" id="txContractId" name="tx_contract_id" />
+          <input type="hidden" id="txId" name="tx_id" />
+          <div class="text-right">
+            <button id="updateTransaction" class="btn btn-success">
+              Update
+            </button>
+            <button id="deleteTransaction" class="btn btn-danger">
+              Delete
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  <!--End of Transaction update or delete modal -->
+</div>
+<!--End of Transaction update or delete modal -->
 {% endblock %} {% block scripts%}
 <script>
   $(document).ready(function() {
@@ -163,7 +190,7 @@
       $("#txStatus").val(data.status);
       $("#txType").val(data.type);
       $("#txAmount").val(data.amount);
-      $("#txContractId").val(data.contract_id)
+      $("#txContractId").val(data.contract_id);
       $("#transactionEditingModal").modal("show");
     });
 

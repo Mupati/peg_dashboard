@@ -68,6 +68,7 @@
       </div>
       <div class="modal-body">
         <form action="/contracts" method="POST">
+          {{ form.csrf_token }}
           <div class="form-group">
             <label for="name">{{ form.customer_id.label }}</label>
             {{form.customer_id(class_="form-control")}}
@@ -101,6 +102,7 @@
       </div>
       <div class="modal-body">
         <form method="POST">
+          {{ form.csrf_token }}
           <div class="form-group">
             {{ form.customer_id.label }}
             <input

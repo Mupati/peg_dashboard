@@ -42,9 +42,6 @@
       </table>
     </div>
   </div>
-  <div class="card-footer small text-muted">
-    Updated yesterday at 11:59 PM
-  </div>
 </div>
 {% endblock %} {% block modals%}
 
@@ -64,17 +61,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/customers" method="POST">
+        <form method="POST" id="addCustomer">
+          {{ form.csrf_token }}
           <div class="form-group">
-            <label for="formGroupExampleInput">{{
-              form.first_name.label
-            }}</label>
+            <label for="firstNameInput">{{ form.first_name.label }}</label>
             {{form.first_name(class_="form-control")}}
           </div>
           <div class="form-group">
-            <label for="formGroupExampleInput2">{{
-              form.last_name.label
-            }}</label>
+            <label for="lastNameInput">{{ form.last_name.label }}</label>
             {{form.last_name(class_="form-control")}}
           </div>
           {{form.submit(class_="btn btn-primary btn-lg btn-block")}}
@@ -100,15 +94,26 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="customerEditing" class="mx-auto">
+        <form id="customerEditing" class="mx-auto" method="POST">
+          {{ form.csrf_token }}
           <input type="hidden" id="customerId" />
           <div class="form-group">
             {{ form.first_name.label }}
-            <input type="text" class="form-control" id="firstName" name="first_name" />
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="first_name"
+            />
           </div>
           <div class="form-group">
             {{ form.last_name.label }}
-            <input type="text" class="form-control" id="lastName" name="last_name" />
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="last_name"
+            />
           </div>
           <div class="text-right">
             <button id="updateCustomer" class="btn btn-success">Update</button>
@@ -133,6 +138,22 @@
       columns: [{ data: "id" }, { data: "first_name" }, { data: "last_name" }]
     });
 
+    // Add New Customer
+    $("form#addCustomer").submit(function(e) {
+      $.ajax({
+        type: "POST",
+        url: "{{ url_for('home.customers') }}",
+        data: $("form#addCustomer").serialize(),
+        success: function(data) {
+          $(".toast-body").html(data);
+          reloadDatatable();
+          $(".toast").toast("show");
+        }
+      });
+      e.preventDefault();
+      $("#customerModal").modal("hide");
+    });
+
     $("#dataTable tbody").on("click", "tr", function() {
       var data = table.row(this).data();
       $("#customerId").val(data.id);
@@ -141,24 +162,41 @@
       $("#customerEditingModal").modal("show");
     });
 
-    $("#updateCustomer").on("click", function() {
-      alert($("#customerId").val());
+    $("#updateCustomer").on("click", function(e) {
+      var id = $("#customerId").val();
+      var firstName = $("#firstName").val();
+      var lastName = $("#lastName").val();
+      $.ajax({
+        type: "POST",
+        url: "{{url_for('home.update_customer')}}",
+        data: { id, firstName, lastName },
+        success: function(data) {
+          $("#customerEditingModal").modal("hide");
+          reloadDatatable();
+        }
+      });
+      e.preventDefault();
     });
 
     $("#deleteCustomer").on("click", function(e) {
-      e.preventDefault();
       var id = $("#customerId").val();
-      console.log(id)
       $.ajax({
         type: "POST",
         url: "{{url_for('home.delete_customer')}}",
-        data: JSON.stringify({ id }),
-        dataType: "json"
-      }).done(function(data) {
-        console.log(data);
-        $("#customerEditingModal").modal("hide");
+        data: id,
+        success: function(data) {
+          reloadDatatable();
+          $("#customerEditingModal").modal("hide");
+        }
       });
+      e.preventDefault();
     });
+
+    function reloadDatatable() {
+      $("#dataTable")
+        .DataTable()
+        .ajax.reload();
+    }
   });
 </script>
 {% endblock %}

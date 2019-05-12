@@ -71,6 +71,7 @@
       </div>
       <div class="modal-body">
         <form action="/products" method="POST">
+          {{ form.csrf_token }}
           <div class="form-group">
             <label for="name">{{ form.name.label }}</label>
             {{form.name(class_="form-control")}}
@@ -116,6 +117,7 @@
       </div>
       <div class="modal-body">
         <form id="productEditing" class="mx-auto">
+          {{ form.csrf_token }}
           <input type="hidden" id="productId" />
           <div class="form-group">
             <label for="productName">{{ form.name.label }}</label>

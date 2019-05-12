@@ -19,13 +19,12 @@ def customers():
     Add products to the customer table from here
     """
     form = CustomerForm()
-    if request.method == 'POST':
+    if form.validate_on_submit():
         customer = Customer(first_name=form.first_name.data,
                             last_name=form.last_name.data)
         db.session.add(customer)
         db.session.commit()
-        flash('customer successfully added')
-        return redirect(url_for('home.index'))
+        return 'Added {}'.format(form.first_name.data + ' ' + form.last_name.data)
     return render_template('home/customers.html', form=form, title='Customer')
 
 
@@ -39,20 +38,17 @@ def fetch_customers_information():
     return jsonify(data)
 
 
-@home.route('/customers/update/<int:id>', methods=['GET', 'POST'])
-def update_customer(id):
-    customer = Customer.query.get_or_404(id)
+@home.route('/customer/update/', methods=['POST'])
+def update_customer():
+    form_data = []
+    for data in request.form.values():
+        form_data.append(data)
+    customer = Customer.query.get_or_404(form_data[0])
     form = CustomerForm(obj=customer)
-    if form.validate_on_submit():
-        customer.first_name = form.first_name.data
-        customer.last_name = form.last_name.data
-        db.session.commit()
-        flash('You have successfully updated the customer.')
-        return redirect(url_for('home.customers'))
-
-    form.first_name.data = customer.first_name
-    form.last_name.data = customer.last_name
-    return render_template('home/customers.html', form=form, title='Customer')
+    customer.first_name = form_data[1]
+    customer.last_name = form_data[2]
+    db.session.commit()
+    return 'updated'
 
 
 @home.route('/customer/delete/', methods=['POST'])
@@ -60,13 +56,10 @@ def delete_customer():
     request_form = request.form
     for key in request_form.keys():
         data = key
-    customerId = json.loads(data)
-    finalId = customerId['id']
-    customer = Customer.query.get_or_404(finalId)
+    customer = Customer.query.get_or_404(data)
     db.session.delete(customer)
     db.session.commit()
-    flash('You have successfully deleted the customer.')
-    return jsonify({'status', 'delete sucess'})
+    return 'deleted'
 
 
 @home.route('/products', methods=['GET', 'POST'])
@@ -76,7 +69,7 @@ def products():
     Add products to the products table from here
     """
     form = ProductForm()
-    if request.method == 'POST':
+    if form.validate_on_submit():
         product = Product(
             name=form.name.data,
             deposit=form.deposit.data,
@@ -100,6 +93,7 @@ def fetch_products_information():
     }
     return jsonify(data)
 
+
 @home.route('/product/delete/', methods=['POST'])
 def delete_product():
     request_form = request.form
@@ -113,6 +107,7 @@ def delete_product():
     flash('You have successfully deleted the product.')
     return jsonify({'status', 'delete sucess'})
 
+
 @home.route('/contracts', methods=['GET', 'POST'])
 def contracts():
     form = ContractForm()
@@ -120,7 +115,7 @@ def contracts():
                                 for g in Customer.query.order_by('first_name')]
     form.product_id.choices = [(g.id, g.name)
                                for g in Product.query.order_by('name')]
-    if request.method == 'POST':
+    if form.validate_on_submit():
         contract = Contract(customer_id=form.customer_id.data,
                             product_id=form.product_id.data)
         db.session.add(contract)
@@ -139,6 +134,7 @@ def fetch_contracts_information():
         "data": contract_data
     }
     return jsonify(data)
+
 
 @home.route('/contract/delete/', methods=['POST'])
 def delete_contract():
@@ -161,7 +157,7 @@ def transactions():
                                              for g in Customer.query.order_by('first_name')]
     form.try_contract.product_id.choices = [(g.id, g.name)
                                             for g in Product.query.order_by('name')]
-    if request.method == 'POST':
+    if form.validate_on_submit():
         contract = Contract.query.filter_by(customer_id=form.try_contract.customer_id.data).filter_by(
             product_id=form.try_contract.product_id.data).first_or_404()
         transaction = Transaction(
