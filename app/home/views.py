@@ -4,10 +4,12 @@ from .forms import ProductForm, CustomerForm, ContractForm, TransactionForm
 from .. import db
 from ..models import Product, Customer, Contract, Transaction
 import json
+from flask_login import login_required
 
 
 @home.route('/index')
 @home.route('/')
+@login_required
 def index():
     return render_template('home/index.html', title='Dashboard')
 
