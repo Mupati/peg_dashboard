@@ -17,7 +17,7 @@ class RegistrationForm(FlaskForm):
         EqualTo('confirm_password')
     ])
     confirm_password = PasswordField('Confirm Password')
-    submit = SubmitField('Register')
+    submit = SubmitField('Add Employee')
 
     def validate_email(self, field):
         if Employee.query.filter_by(email=field.data).first():
