@@ -1,6 +1,7 @@
 # PEG Dashboard
 
 View Demo: [http://mupati.pythonanywhere.com](http://mupati.pythonanywhere.com)
+Test Credentials: **email:** admin@mupati.com | **password:** admin
 
 ## Introduction
 
@@ -62,7 +63,7 @@ $ flask run
 7. Navigate to [http://localhost:5000](http://localhost:5000)
 
 ## ToDo
-
+- CRUD functionalities for Product, Contract and Transaction
 - Authentication System for Company Users and Customers
 - Dashboard for Customers
 - Analytics with Graphs
