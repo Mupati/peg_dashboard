@@ -1,0 +1,39 @@
+{% extends "auth/auth_layout.html" %} {% block content %}
+<div class="card" id="register">
+  <div class="card-body">
+    <form method="POST">
+      {{ form.csrf_token }}
+      <div class="form-group">
+        <label for="emailInput">{{ form.email.label }}</label>
+        {{form.email(class_="form-control")}}
+      </div>
+      {#
+      <!-- <div class="form-group">
+        <label for="firstNameInput">{{ form.first_name.label }}</label>
+        {{form.first_name(class_="form-control")}}
+      </div>
+
+      <div class="form-group">
+        <label for="lastNameInput">{{ form.last_name.label }}</label>
+        {{form.last_name(class_="form-control")}}
+      </div> -->
+      #}
+      <div class="form-group">
+        <label for="passwordInput">{{ form.password.label }}</label>
+        {{form.password(class_="form-control")}}
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPasswordInput">{{
+          form.confirm_password.label
+        }}</label>
+        {{form.confirm_password(class_="form-control")}}
+      </div>
+      {{form.submit(class_="btn btn-primary btn-lg btn-block")}}
+    </form>
+  </div>
+  <a class="text-center" href="{{ url_for('home.index') }}"
+    ><i class="fas fa-long-arrow-alt-left"></i>&nbsp;&nbsp;Back to Dashboard</a
+  >
+</div>
+{% endblock%}

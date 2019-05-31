@@ -109,5 +109,4 @@ venv.bak/
 todo.txt
 
 # unused directories
-app/templates/auth
 app/templates/home/customersOld.html

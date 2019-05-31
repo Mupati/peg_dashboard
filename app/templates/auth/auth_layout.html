@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{ title }} - PEG APPLICATION</title>
+    {% include 'partials/styles.html'%}
+    <link
+      href="{{ url_for('static', filename='css/custom.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main>
+      {% block content%} {% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sb-admin.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts%} {% endblock %}
+  </body>
+</html>
