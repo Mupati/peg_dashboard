@@ -104,7 +104,7 @@ class Customer(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(60), index=True, nullable=False)
     last_name = db.Column(db.String(60), index=True, nullable=False)
-    # contract = db.relationship('Contract', backref='customer', lazy=True)
+    contracts = db.relationship('Contract', backref='customer', lazy='dynamic')
 
     def to_json(self):
         return dict(id=self.id,
@@ -125,7 +125,7 @@ class Product(db.Model):
     total_price = db.Column(db.Float)
     payment_frequency = db.Column(db.String(60), index=True, nullable=False)
     payment_amount = db.Column(db.Float)
-    # contract = db.relationship('Product', backref='product', lazy=True)
+    contracts = db.relationship('Contract', backref='product', lazy='dynamic')
 
     def to_json(self):
         return dict(id=self.id,
@@ -149,6 +149,7 @@ class Contract(db.Model):
                            default=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
+    transactions = db.relationship('Transaction', backref='contract', lazy='dynamic')
 
     def to_json(self):
         return dict(id=self.id,

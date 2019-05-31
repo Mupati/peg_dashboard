@@ -5,6 +5,7 @@ from .. import db
 from ..models import Product, Customer, Contract, Transaction
 import json
 from flask_login import login_required
+from sqlalchemy.orm import joinedload
 
 
 @home.route('/index')
@@ -113,7 +114,7 @@ def delete_product():
 @home.route('/contracts', methods=['GET', 'POST'])
 def contracts():
     form = ContractForm()
-    form.customer_id.choices = [(g.id, (g.first_name + '' + g.last_name))
+    form.customer_id.choices = [(g.id, (g.first_name + '  ' + g.last_name))
                                 for g in Customer.query.order_by('first_name')]
     form.product_id.choices = [(g.id, g.name)
                                for g in Product.query.order_by('name')]
@@ -129,9 +130,10 @@ def contracts():
 
 @home.route('/contract_data')
 def fetch_contracts_information():
-    contracts = Contract.query.all()
-    print(contracts)
-    contract_data = [contract.to_json() for contract in contracts]
+    contracts = db.session.query(Contract.id, Product.name, Customer.first_name + ' '+Customer.last_name, Contract.created_at).join(
+        Product, Contract.product_id == Product.id).join(Customer, Contract.customer_id == Customer.id).all()
+    contract_data = [{'id': contract[0], 'product_id': contract[1], 'customer_id': contract[2],
+                      'created_at': contract[3].strftime('%Y-%m-%d %H:%M:%S')} for contract in contracts]
     data = {
         "data": contract_data
     }
@@ -175,9 +177,11 @@ def transactions():
 def fetch_transactions_information():
     transactions = Transaction.query.all()
     transaction_data = [transaction.to_json() for transaction in transactions]
+    print(transaction_data)
     data = {
         "data": transaction_data
     }
+    # print(data)
     return jsonify(data)
 
 

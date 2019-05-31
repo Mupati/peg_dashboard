@@ -31,3 +31,24 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log in')
+
+
+class DepartmentForm(FlaskForm):
+    """
+    Department Creation/Addition Form
+    """
+    name = StringField('Name', validators=DataRequired())
+    description = StringField('Description', validators=DataRequired())
+
+
+class RolesForm(FlaskForm):
+    """
+    Roles for Company Employees
+    They are: staff, editor, admin
+    """
+    name = StringField('Name', validators=DataRequired())
+    description = StringField('Description', validators=DataRequired())
+
+
+class CountryForm(FlaskForm):
+    name = StringField('Name', validators=DataRequired())

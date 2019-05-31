@@ -57,3 +57,11 @@ def logout():
 
     # redirect to the login page
     return redirect(url_for('auth.login'))
+
+
+@auth.route('/reset-password')
+def reset_password():
+    """
+    Reset the password for user
+    """
+    return True
