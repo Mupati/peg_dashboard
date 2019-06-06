@@ -170,14 +170,12 @@
     $("#deleteContract").on("click", function(e) {
       e.preventDefault();
       var id = $("#contractId").val();
-      console.log(id)
       $.ajax({
         type: "POST",
         url: "{{url_for('home.delete_contract')}}",
         data: JSON.stringify({ id }),
         dataType: "json"
       }).done(function(data) {
-        console.log(data);
         $("#contractEditingModal").modal("hide");
       });
     });

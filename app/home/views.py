@@ -97,6 +97,22 @@ def fetch_products_information():
     return jsonify(data)
 
 
+@home.route('/product/update/', methods=['POST'])
+def update_product():
+    form_data = []
+    for data in request.form.values():
+        form_data.append(data)
+    product = Product.query.get_or_404(form_data[0])
+    form = ProductForm(obj=product)
+    product.name=form_data[1],
+    product.deposit=form_data[2],
+    product.total_price=form_data[3],
+    product.payment_frequency=form_data[4],
+    product.payment_amount=form_data[5]
+    db.session.commit()
+    return 'updated'
+
+
 @home.route('/product/delete/', methods=['POST'])
 def delete_product():
     request_form = request.form

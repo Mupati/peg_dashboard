@@ -121,25 +121,50 @@
           <input type="hidden" id="productId" />
           <div class="form-group">
             <label for="productName">{{ form.name.label }}</label>
-            <input type="text" class="form-control" id="productName" name="product_name" />
+            <input
+              type="text"
+              class="form-control"
+              id="productName"
+              name="product_name"
+            />
           </div>
           <div class="form-group">
             <label for="productDeposit">{{ form.deposit.label }}</label>
-            <input type="text" class="form-control" id="productDeposit" name="product_deposit" />
+            <input
+              type="text"
+              class="form-control"
+              id="productDeposit"
+              name="product_deposit"
+            />
           </div>
           <div class="form-group">
             {{ form.total_price.label }}
-            <input type="text" class="form-control" id="totalPrice" name="total_price" />
+            <input
+              type="text"
+              class="form-control"
+              id="totalPrice"
+              name="total_price"
+            />
           </div>
           <div class="form-group">
             <label for="paymentFrequency">{{
               form.payment_frequency.label
             }}</label>
-            <input type="text" class="form-control" id="paymentFrequency" name="payment_frequency" />
+            <input
+              type="text"
+              class="form-control"
+              id="paymentFrequency"
+              name="payment_frequency"
+            />
           </div>
           <div class="form-group">
             <label for="paymentAmount">{{ form.payment_amount.label }}</label>
-            <input type="text" class="form-control" id="paymentAmount" name="payment_amount" />
+            <input
+              type="text"
+              class="form-control"
+              id="paymentAmount"
+              name="payment_amount"
+            />
           </div>
           <div class="text-right">
             <button id="updateProduct" class="btn btn-success">Update</button>
@@ -174,7 +199,6 @@
 
     $("#productsTable tbody").on("click", "tr", function() {
       var data = table.row(this).data();
-      console.log(data)
       $("#productId").val(data.id);
       $("#productName").val(data.name);
       $("#productDeposit").val(data.deposit);
@@ -184,8 +208,34 @@
       $("#productEditingModal").modal("show");
     });
 
-    $("#updateProduct").on("click", function() {
-      alert($("#productId").val());
+    // $("#updateProduct").on("click", function() {
+    //   alert($("#productId").val());
+    // });
+
+    $("#updateProduct").on("click", function(e) {
+      var id = $("#productId").val();
+      var productName = $("#productName").val();
+      var productDeposit = $("#productDeposit").val();
+      var totalPrice = $("#totalPrice").val();
+      var paymentFrequency = $("#paymentFrequency").val();
+      var paymentAmount = $("#paymentAmount").val();
+      $.ajax({
+        type: "POST",
+        url: "{{url_for('home.update_product')}}",
+        data: {
+          id,
+          productName,
+          productDeposit,
+          totalPrice,
+          paymentFrequency,
+          paymentAmount
+        },
+        success: function(data) {
+          $("#productEditingModal").modal("hide");
+          reloadDatatable();
+        }
+      });
+      e.preventDefault();
     });
 
     $("#deleteProduct").on("click", function(e) {
@@ -197,10 +247,15 @@
         data: JSON.stringify({ id }),
         dataType: "json"
       }).done(function(data) {
-        console.log(data);
         $("#productEditingModal").modal("hide");
       });
     });
+
+    function reloadDatatable() {
+      $("#productsTable")
+        .DataTable()
+        .ajax.reload();
+    }
   });
 </script>
 {% endblock %}
