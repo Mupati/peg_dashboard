@@ -83,7 +83,7 @@ def products():
         db.session.add(product)
         db.session.commit()
         flash('product successfully added')
-        return redirect(url_for('home.index'))
+        return 'Added {}'.format(form.name.data)
     return render_template('home/products.html', form=form, title='Product')
 
 
@@ -104,11 +104,11 @@ def update_product():
         form_data.append(data)
     product = Product.query.get_or_404(form_data[0])
     form = ProductForm(obj=product)
-    product.name=form_data[1],
-    product.deposit=form_data[2],
-    product.total_price=form_data[3],
-    product.payment_frequency=form_data[4],
-    product.payment_amount=form_data[5]
+    product.name = form_data[1],
+    product.deposit = form_data[2],
+    product.total_price = form_data[3],
+    product.payment_frequency = form_data[4],
+    product.payment_amount = form_data[5]
     db.session.commit()
     return 'updated'
 
@@ -135,12 +135,13 @@ def contracts():
     form.product_id.choices = [(g.id, g.name)
                                for g in Product.query.order_by('name')]
     if form.validate_on_submit():
-        contract = Contract(customer_id=form.customer_id.data,
-                            product_id=form.product_id.data)
+        print(request.form.values())
+        contract = Contract(customer_id=form.customerId.data,
+                            product_id=form.productId.data)
         db.session.add(contract)
         db.session.commit()
         flash('contract successfully created')
-        return redirect(url_for('home.index'))
+        return 'Contract has been created'
     return render_template('home/contracts.html', title='Contracts', form=form)
 
 

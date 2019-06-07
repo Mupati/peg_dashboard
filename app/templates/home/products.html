@@ -70,7 +70,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/products" method="POST">
+        <form method="POST" id="addProduct">
           {{ form.csrf_token }}
           <div class="form-group">
             <label for="name">{{ form.name.label }}</label>
@@ -195,6 +195,22 @@
         { data: "payment_frequency" },
         { data: "payment_amount" }
       ]
+    });
+
+    // Add New Product
+    $("form#addProduct").submit(function(e) {
+      $.ajax({
+        type: "POST",
+        url: "{{ url_for('home.products') }}",
+        data: $("form#addProduct").serialize(),
+        success: function(data) {
+          $(".toast-body").html(data);
+          reloadDatatable();
+          $(".toast").toast("show");
+        }
+      });
+      e.preventDefault();
+      $("#productModal").modal("hide");
     });
 
     $("#productsTable tbody").on("click", "tr", function() {

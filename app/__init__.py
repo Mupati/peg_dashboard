@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
 from app.config import app_config
+from .errors import Errors
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -38,5 +39,7 @@ def create_app(config_name):
 
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
+
+    app.register_error_handler(404, Errors.page_not_found)
 
     return app

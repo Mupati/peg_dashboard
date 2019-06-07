@@ -67,7 +67,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/contracts" method="POST">
+        <form method="POST" id="createContract">
           {{ form.csrf_token }}
           <div class="form-group">
             <label for="name">{{ form.customer_id.label }}</label>
@@ -86,7 +86,7 @@
 <!-- End of Contract Addition Modal -->
 
 <!-- Contract Update or Delete Modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="contractEditingModal">
+<!-- <div class="modal fade" tabindex="-1" role="dialog" id="contractEditingModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -123,7 +123,7 @@
               disabled
             />
           </div>
-          <input type="hidden" id="contractId">
+          <input type="hidden" id="contractId" />
           <div class="text-right">
             <button id="updateContract" class="btn btn-success" disabled>
               Update
@@ -134,7 +134,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <!-- End of Contract Update or Delete Modal -->
 {% endblock %} {% block scripts%}
 <script>
@@ -152,6 +152,28 @@
         { data: "customer_id" },
         { data: "created_at" }
       ]
+    });
+
+    // Create New Product
+    $("form#createContract").submit(function(e) {
+      var customerId = $("#customer_id").val();
+      var productId = $("#product_id").val();
+      $.ajax({
+        type: "POST",
+        url: "{{ url_for('home.contracts') }}",
+        data: {
+          customerId,
+          productId
+        },
+        success: function(data) {
+          console.log(data);
+          $(".toast-body").html(data);
+          reloadDatatable();
+          $(".toast").toast("show");
+        }
+      });
+      e.preventDefault();
+      $("#contractModal").modal("hide");
     });
 
     $("#contractsTable tbody").on("click", "tr", function() {
@@ -179,6 +201,12 @@
         $("#contractEditingModal").modal("hide");
       });
     });
+
+    function reloadDatatable() {
+      $("#productsTable")
+        .DataTable()
+        .ajax.reload();
+    }
   });
 </script>
 {% endblock %}

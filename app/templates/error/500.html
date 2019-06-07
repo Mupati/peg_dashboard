@@ -1,0 +1,11 @@
+{% extends "auth/auth_layout.html" %} {% block content %}
+<div class="card" id="login">
+  <div class="card-body">
+    <h1>{{ title }}</h1>
+    <p>Something went wrong internally</p>
+  </div>
+  <a class="text-center" href="{{ url_for('home.index') }}"
+    ><i class="fas fa-long-arrow-alt-left"></i>&nbsp;&nbsp;Back to Home</a
+  >
+</div>
+{% endblock%}
