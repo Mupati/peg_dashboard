@@ -41,5 +41,7 @@ def create_app(config_name):
     app.register_blueprint(home_blueprint)
 
     app.register_error_handler(404, Errors.page_not_found)
+    app.register_error_handler(403, Errors.forbidden)
+    app.register_error_handler(500, Errors.internal_server_error)
 
     return app

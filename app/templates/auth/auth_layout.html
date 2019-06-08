@@ -13,6 +13,25 @@
   </head>
   <body>
     <main>
+      <section class="feedback">
+        {% with messages = get_flashed_messages() %} {% if messages %}
+        <div class="flashes">
+          {% for message in messages %}
+          <div class="alert alert-danger" role="alert">
+            {{ message }}
+            <button
+              type="button"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+      </section>
       {% block content%} {% endblock %}
     </main>
 

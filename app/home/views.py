@@ -1,11 +1,10 @@
-from flask import render_template, jsonify, flash, redirect, url_for, request
+from flask import render_template, jsonify, redirect, url_for, request
 from . import home
 from .forms import ProductForm, CustomerForm, ContractForm, TransactionForm
 from .. import db
 from ..models import Product, Customer, Contract, Transaction
 import json
 from flask_login import login_required
-from sqlalchemy.orm import joinedload
 
 
 @home.route('/index')
@@ -31,7 +30,7 @@ def customers():
     return render_template('home/customers.html', form=form, title='Customer')
 
 
-@home.route('/customer_data')
+@home.route('/customer_data', methods=['GET'])
 def fetch_customers_information():
     customers = Customer.query.all()
     customer_data = [customer.to_json() for customer in customers]
@@ -82,12 +81,11 @@ def products():
         )
         db.session.add(product)
         db.session.commit()
-        flash('product successfully added')
         return 'Added {}'.format(form.name.data)
     return render_template('home/products.html', form=form, title='Product')
 
 
-@home.route('/product_data')
+@home.route('/product_data', methods=['GET'])
 def fetch_products_information():
     products = Product.query.all()
     product_data = [product.to_json() for product in products]
@@ -123,29 +121,26 @@ def delete_product():
     product = Product.query.get_or_404(finalId)
     db.session.delete(product)
     db.session.commit()
-    flash('You have successfully deleted the product.')
-    return jsonify({'status', 'delete sucess'})
+    return jsonify({'status', 'delete success'})
 
 
 @home.route('/contracts', methods=['GET', 'POST'])
 def contracts():
     form = ContractForm()
-    form.customer_id.choices = [(g.id, (g.first_name + '  ' + g.last_name))
-                                for g in Customer.query.order_by('first_name')]
-    form.product_id.choices = [(g.id, g.name)
-                               for g in Product.query.order_by('name')]
-    if form.validate_on_submit():
-        print(request.form.values())
-        contract = Contract(customer_id=form.customerId.data,
-                            product_id=form.productId.data)
+    form.customer_id.choices = [('', '--- Select Customer ---')] + [(g.id, (g.first_name + '  ' + g.last_name))
+                                                                    for g in Customer.query.order_by('id')]
+    form.product_id.choices = [('', '--- Select Product ---')] + [(g.id, g.name)
+                                                                  for g in Product.query.order_by('id')]
+    if request.method == 'POST':
+        contract = Contract(customer_id=form.customer_id.data,
+                            product_id=form.product_id.data)
         db.session.add(contract)
         db.session.commit()
-        flash('contract successfully created')
-        return 'Contract has been created'
+        return 'Contract with ID {} been created'.format(form.customer_id.data)
     return render_template('home/contracts.html', title='Contracts', form=form)
 
 
-@home.route('/contract_data')
+@home.route('/contract_data', methods=['GET'])
 def fetch_contracts_information():
     contracts = db.session.query(Contract.id, Product.name, Customer.first_name + ' '+Customer.last_name, Contract.created_at).join(
         Product, Contract.product_id == Product.id).join(Customer, Contract.customer_id == Customer.id).all()
@@ -167,30 +162,30 @@ def delete_contract():
     contract = Contract.query.get_or_404(finalId)
     db.session.delete(contract)
     db.session.commit()
-    flash('You have successfully deleted the customer.')
-    return jsonify({'status', 'delete sucess'})
+    return jsonify({'status', 'delete success'})
 
 
 @home.route('/transactions', methods=['GET', 'POST'])
 def transactions():
     form = TransactionForm()
-    form.try_contract.customer_id.choices = [(g.id, (g.first_name + '' + g.last_name))
-                                             for g in Customer.query.order_by('first_name')]
-    form.try_contract.product_id.choices = [(g.id, g.name)
-                                            for g in Product.query.order_by('name')]
-    if form.validate_on_submit():
-        contract = Contract.query.filter_by(customer_id=form.try_contract.customer_id.data).filter_by(
-            product_id=form.try_contract.product_id.data).first_or_404()
+    form.try_contract.customer_id.choices =[('', '--- Select Customer ---')] +  [(g.id, (g.first_name + ' ' + g.last_name))
+                                             for g in Customer.query.filter(Customer.contracts)]
+    form.try_contract.product_id.choices =[('', '--- Select Product ---')] +  [(g.id, g.name)
+                                            for g in Product.query.filter(Product.contracts)]
+    contract = Contract.query.filter_by(customer_id=form.try_contract.customer_id.data).filter_by(
+        product_id=form.try_contract.product_id.data).first()
+    if request.method == 'POST':
+        if contract == None:
+            return 'Contract is unavailable for the user'
         transaction = Transaction(
             status=form.status.data, type=form.type.data, amount=form.amount.data, contract_id=contract.id)
         db.session.add(transaction)
         db.session.commit()
-        flash('transaction successfully created')
-        return redirect(url_for('home.index'))
+        return 'Transaction has been created successfully'
     return render_template('home/transactions.html', title='Transactions', form=form)
 
 
-@home.route('/transaction_data')
+@home.route('/transaction_data', methods=['GET'])
 def fetch_transactions_information():
     transactions = Transaction.query.all()
     transaction_data = [transaction.to_json() for transaction in transactions]
@@ -212,5 +207,4 @@ def delete_transaction():
     transaction = Transaction.query.get_or_404(finalId)
     db.session.delete(transaction)
     db.session.commit()
-    flash('You have successfully deleted the customer.')
-    return jsonify({'status', 'delete sucess'})
+    return jsonify({'status', 'delete success'})

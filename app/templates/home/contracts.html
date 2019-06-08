@@ -86,7 +86,7 @@
 <!-- End of Contract Addition Modal -->
 
 <!-- Contract Update or Delete Modal -->
-<!-- <div class="modal fade" tabindex="-1" role="dialog" id="contractEditingModal">
+<div class="modal fade" tabindex="-1" role="dialog" id="contractEditingModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -134,7 +134,7 @@
       </div>
     </div>
   </div>
-</div> -->
+</div>
 <!-- End of Contract Update or Delete Modal -->
 {% endblock %} {% block scripts%}
 <script>
@@ -154,19 +154,13 @@
       ]
     });
 
-    // Create New Product
+    // Create New Contract
     $("form#createContract").submit(function(e) {
-      var customerId = $("#customer_id").val();
-      var productId = $("#product_id").val();
       $.ajax({
         type: "POST",
         url: "{{ url_for('home.contracts') }}",
-        data: {
-          customerId,
-          productId
-        },
+        data: $("form#createContract").serialize(),
         success: function(data) {
-          console.log(data);
           $(".toast-body").html(data);
           reloadDatatable();
           $(".toast").toast("show");
@@ -203,10 +197,23 @@
     });
 
     function reloadDatatable() {
-      $("#productsTable")
+      $("#contractsTable")
         .DataTable()
         .ajax.reload();
     }
+
+        // Inject our CSRF token into our AJAX request.
+    var csrf_token = "{{ form.csrf_token._value() }}";
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (
+          !/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) &&
+          !this.crossDomain
+        ) {
+          xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        }
+      }
+    });
   });
 </script>
 {% endblock %}

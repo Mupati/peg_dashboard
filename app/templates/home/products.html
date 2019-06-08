@@ -224,10 +224,6 @@
       $("#productEditingModal").modal("show");
     });
 
-    // $("#updateProduct").on("click", function() {
-    //   alert($("#productId").val());
-    // });
-
     $("#updateProduct").on("click", function(e) {
       var id = $("#productId").val();
       var productName = $("#productName").val();
@@ -272,6 +268,18 @@
         .DataTable()
         .ajax.reload();
     }
+
+    var csrf_token = "{{ form.csrf_token._value() }}";
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (
+          !/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) &&
+          !this.crossDomain
+        ) {
+          xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        }
+      }
+    });
   });
 </script>
 {% endblock %}

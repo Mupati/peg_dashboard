@@ -69,7 +69,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/transactions" method="POST">
+        <form method="POST" id="createTransaction">
           {{ form.csrf_token }}
           <div class="form-group">
             <label for="name">{{ form.status.label }}</label>
@@ -99,7 +99,7 @@
 </div>
 
 <!-- Transaction update or delete modal -->
-<div
+<!-- <div
   class="modal fade"
   tabindex="-1"
   role="dialog"
@@ -162,7 +162,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <!--End of Transaction update or delete modal -->
 {% endblock %} {% block scripts%}
 <script>
@@ -184,32 +184,63 @@
       ]
     });
 
-    $("#transactionTable tbody").on("click", "tr", function() {
-      var data = table.row(this).data();
-      $("#txId").val(data.id);
-      $("#txStatus").val(data.status);
-      $("#txType").val(data.type);
-      $("#txAmount").val(data.amount);
-      $("#txContractId").val(data.contract_id);
-      $("#transactionEditingModal").modal("show");
-    });
-
-    $("#updateTransaction").on("click", function() {
-      alert($("#transactionId").val());
-    });
-
-    $("#deleteTransaction").on("click", function(e) {
-      e.preventDefault();
-      var id = $("#customerId").val();
+    $("form#createTransaction").submit(function(e) {
       $.ajax({
         type: "POST",
-        url: "{{url_for('home.delete_transaction')}}",
-        data: JSON.stringify({ id }),
-        dataType: "json"
-      }).done(function(data) {
-        console.log(data);
+        url: "{{ url_for('home.transactions') }}",
+        data: $("form#createTransaction").serialize(),
+        success: function(data) {
+          $(".toast-body").html(data);
+          reloadDatatable();
+          $(".toast").toast("show");
+        }
       });
+      e.preventDefault();
+      $("#transactionModal").modal("hide");
     });
+    // $("#transactionTable tbody").on("click", "tr", function() {
+    //   var data = table.row(this).data();
+    //   $("#txId").val(data.id);
+    //   $("#txStatus").val(data.status);
+    //   $("#txType").val(data.type);
+    //   $("#txAmount").val(data.amount);
+    //   $("#txContractId").val(data.contract_id);
+    //   $("#transactionEditingModal").modal("show");
+    // });
+
+    // $("#updateTransaction").on("click", function() {
+    //   alert($("#transactionId").val());
+    // });
+
+    // $("#deleteTransaction").on("click", function(e) {
+    //   e.preventDefault();
+    //   var id = $("#customerId").val();
+    //   $.ajax({
+    //     type: "POST",
+    //     url: "{{url_for('home.delete_transaction')}}",
+    //     data: JSON.stringify({ id }),
+    //     dataType: "json"
+    //   }).done(function(data) {
+    //     console.log(data);
+    //   });
+    // });
+
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (
+          !/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) &&
+          !this.crossDomain
+        ) {
+          xhr.setRequestHeader("X-CSRFToken", "{{ form.csrf_token._value() }}");
+        }
+      }
+    });
+
+    function reloadDatatable() {
+      $("#transactionTable")
+        .DataTable()
+        .ajax.reload();
+    }
   });
 </script>
 {% endblock %}

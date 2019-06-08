@@ -21,7 +21,7 @@ def login():
             return redirect(url_for('home.index'))
         # when login details are incorrect
         else:
-            flash('Invalid Email or Password.')
+            flash('Invalid Email or Password')
     return render_template('auth/login.html', title='Log in', form=form)
 
 
