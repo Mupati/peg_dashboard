@@ -12,7 +12,8 @@ class ProductForm(FlaskForm):
     name = StringField(u'Name', validators=[DataRequired()])
     deposit = FloatField(u'Deposit', validators=[DataRequired()])
     total_price = FloatField(u'Total Price', validators=[DataRequired()])
-    payment_frequency = StringField(u'Payment Frequency', validators=[DataRequired()])
+    payment_frequency = StringField(
+        u'Payment Frequency', validators=[DataRequired()])
     payment_amount = FloatField(u'Payment Amount', validators=[DataRequired()])
     submit = SubmitField('Add Product')
 
@@ -42,5 +43,6 @@ class TransactionForm(FlaskForm):
     status = StringField(u'Status', validators=[DataRequired()])
     type = StringField(u'Type', validators=[DataRequired()])
     amount = FloatField(u'Amount', validators=[DataRequired()])
-    try_contract = FormField(ContractForm)
+    # try_contract = FormField(ContractForm)
+    contract = SelectField(u'Contract', validators=[DataRequired()])
     submit = SubmitField(u'Create Transaction')

@@ -84,12 +84,8 @@
             {{form.amount(class_="form-control")}}
           </div>
           <div class="form-group">
-            <label for="name">{{ form.try_contract.customer_id.label }}</label>
-            {{form.try_contract.customer_id(class_="form-control")}}
-          </div>
-          <div class="form-group">
-            <label for="name">{{ form.try_contract.product_id.label }}</label>
-            {{form.try_contract.product_id(class_="form-control")}}
+            <label for="name">{{ form.contract.label }}</label>
+            {{form.contract(class_="form-control")}}
           </div>
           {{ form.submit(class_="btn btn-primary btn-block") }}
         </form>

@@ -67,7 +67,7 @@ def delete_customer():
 @home.route('/products', methods=['GET', 'POST'])
 def products():
     """
-    Render the product table and 
+    Render the product table and
     Add products to the products table from here
     """
     form = ProductForm()
@@ -168,17 +168,19 @@ def delete_contract():
 @home.route('/transactions', methods=['GET', 'POST'])
 def transactions():
     form = TransactionForm()
-    form.try_contract.customer_id.choices =[('', '--- Select Customer ---')] +  [(g.id, (g.first_name + ' ' + g.last_name))
-                                             for g in Customer.query.filter(Customer.contracts)]
-    form.try_contract.product_id.choices =[('', '--- Select Product ---')] +  [(g.id, g.name)
-                                            for g in Product.query.filter(Product.contracts)]
-    contract = Contract.query.filter_by(customer_id=form.try_contract.customer_id.data).filter_by(
-        product_id=form.try_contract.product_id.data).first()
+    # form.try_contract.customer_id.choices = [('', '--- Select Customer ---')] + [(g.id, (g.first_name + ' ' + g.last_name))
+    #                                                                              for g in Customer.query.filter(Customer.contracts)]
+    # form.try_contract.product_id.choices = [('', '--- Select Product ---')] + [(g.id, g.name)
+    #                                                                            for g in Product.query.filter(Product.contracts)]
+    form.contract.choices = [('', '---Select Contract---')] + [(g[0], (g[1] + ', ' + g[2])) for g in db.session.query(Contract.id, Product.name,
+                                                                                                                      Customer.first_name + ' '+Customer.last_name).join(Product, Contract.product_id == Product.id).join(Customer, Contract.customer_id == Customer.id).all()]
+
+    # contract = Contract.query.filter_by(customer_id=form.try_contract.customer_id.data).filter_by(
+    #     product_id=form.try_contract.product_id.data).first()
+
     if request.method == 'POST':
-        if contract == None:
-            return 'Contract is unavailable for the user'
         transaction = Transaction(
-            status=form.status.data, type=form.type.data, amount=form.amount.data, contract_id=contract.id)
+            status=form.status.data, type=form.type.data, amount=form.amount.data, contract_id=form.contract.data)
         db.session.add(transaction)
         db.session.commit()
         return 'Transaction has been created successfully'
