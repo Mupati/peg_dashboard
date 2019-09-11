@@ -51,6 +51,7 @@ $ cp .env-example .env
 5. Run the migrations
 
 ```
+$ flask db upgrade
 $ flask db migrate
 ```
 

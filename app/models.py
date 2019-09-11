@@ -149,7 +149,8 @@ class Contract(db.Model):
                            default=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
-    transactions = db.relationship('Transaction', backref='contract', lazy='dynamic')
+    transactions = db.relationship(
+        'Transaction', backref='contract', lazy='dynamic')
 
     def to_json(self):
         return dict(id=self.id,
